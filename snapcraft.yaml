@@ -1,0 +1,33 @@
+name: mir-kiosk
+version: 0.1
+summary: A minimal Mir based shell for kiosk type applications
+description: A minimal Mir based shell for kiosk type applications
+confinement: strict
+grade: devel
+
+apps:
+  mir-kiosk:
+    command: bin/run-miral
+    daemon: simple
+    slots: [mir]
+    plugs: [opengl]
+
+parts:
+  miral-examples:
+    plugin: nil
+    stage-packages:
+      - miral-examples
+      - mir-graphics-drivers-desktop
+
+  icons:
+    plugin: dump
+    source: .
+    stage-packages: [dmz-cursor-theme]
+    organize:
+      usr/share/icons/DMZ-White: icons/default
+
+  run-miral:
+    plugin: dump
+    source: .
+    organize:
+      run-miral: bin/run-miral
