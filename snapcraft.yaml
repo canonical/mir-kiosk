@@ -5,6 +5,12 @@ description: A minimal Mir based shell for kiosk type applications
 confinement: strict
 grade: devel
 
+plugs:
+  mir-libs:
+    interface: content
+    target: mir-libs
+    default-provider: mir-libs:mir-libs
+
 apps:
   mir-kiosk:
     command: bin/run-miral
@@ -17,7 +23,6 @@ parts:
     plugin: nil
     stage-packages:
       - miral-examples
-      - mir-graphics-drivers-desktop
 
   icons:
     plugin: dump
@@ -31,3 +36,8 @@ parts:
     source: .
     organize:
       run-miral: bin/run-miral
+
+  mir-libs-target:
+    plugin: dump
+    source: .
+    snap: [mir-libs]
