@@ -1,6 +1,7 @@
 #!/bin/bash
 
-if ! kiosk_mode=$(snapctl get kiosk-mode); then
+kiosk_mode=$(snapctl get kiosk-mode)
+if [ -z "${kiosk_mode}" ]; then
     kiosk_mode=on
 fi
 
@@ -8,6 +9,6 @@ if [ "${kiosk_mode}" == "off" ] || [ "${kiosk_mode}" == "on" ]; then
     echo "kiosk-mode=$kiosk_mode" > $SNAP_DATA/.config
 else
     echo "kiosk-mode can only be set to [off|on]"
-    exit 2
+    exit 1
 fi
 
