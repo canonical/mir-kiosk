@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if ! kiosk_mode=$(snapctl get kiosk-mode); then
-    exit
+    kiosk_mode=on
 fi
 
 if [ "${kiosk_mode}" == "off" ] || [ "${kiosk_mode}" == "on" ]; then
