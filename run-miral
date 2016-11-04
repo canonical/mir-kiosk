@@ -1,12 +1,18 @@
 #!/bin/bash
 
-function get_kiosk_mode()
+CONFIG_FILE=$SNAP_DATA/.config
+
+function choose_kiosk_or_shell()
 {
-    local config_file=$SNAP_DATA/.config
+    local kiosk_mode=on
     if [ -e ${config_file} ]; then
-        grep kiosk-mode ${config_file} | cut -d'=' -f2
+        kiosk_mode=$(grep kiosk-mode ${CONFIG_FILE} | cut -d'=' -f2)
+    fi
+
+    if [ "${kiosk_mode}" == "off" ]; then
+        echo "miral-shell"
     else
-        echo "on"
+        echo "miral-kiosk"
     fi
 }
 
@@ -27,24 +33,29 @@ export MIR_SERVER_PLATFORM_PATH=$SNAP/mir-libs/$ARCH/mir/server-platform
 export LD_LIBRARY_PATH="$SNAP/mir-libs/$ARCH:$SNAP/mir-libs/$ARCH/mesa-egl:$LD_LIBRARY_PATH"
 
 while true; do
-    kiosk_mode="$(get_kiosk_mode)"
-    if [ "${kiosk_mode}" == "off" ]; then
-        bin_to_run=miral-shell
-    else
-        bin_to_run=miral-kiosk
-    fi
+
+    bin_to_run=$(choose_kiosk_or_shell)
 
     $SNAP/usr/bin/${bin_to_run} --vt 1 --arw-file --file /run/mir_socket &
     miral_pid=$!
 
-    $SNAP/usr/bin/inotifywait -e modify $SNAP_DATA/.config &
-    inotify_pid=$!
+    # Config file should exist but let's make sure
+    # otherwise, inotifywait will exit immediately and loop will
+    # keep restarting server
+    if [ -e "${CONFIG_FILE}" ]; then
+        $SNAP/usr/bin/inotifywait -e modify ${CONFIG_FILE} &
+        inotify_pid=$!
+    fi
 
     # Wait for a notification or server death
     wait -n
 
-    # Server could have died, stop waiting for notifications
-    kill ${inotify_pid} > /dev/null
+    # Server may have died, stop waiting for config notifications
+    if [ -n "${inotify_pid}" ]; then
+        kill ${inotify_pid} > /dev/null
+        wait ${inotify_pid}
+        unset inotify_pid
+    fi
 
     echo "Shutting down ${bin_to_run} (pid: ${miral_pid})"
     kill ${miral_pid} > /dev/null
@@ -53,7 +64,7 @@ while true; do
         exit 1
     fi
 
-    # Don't spin up more processes until these exit
+    # Ensure server processes has quit for sure
     wait ${miral_pid}
-    wait ${inotify_pid}
+    unset miral_pid
 done
