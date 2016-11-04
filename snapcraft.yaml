@@ -42,3 +42,7 @@ parts:
     plugin: dump
     source: .
     snap: [mir-libs]
+
+  inotify-tools:
+    plugin: nil
+    stage-packages: [inotify-tools]

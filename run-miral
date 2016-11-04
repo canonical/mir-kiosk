@@ -1,5 +1,15 @@
 #!/bin/bash
 
+function get_kiosk_mode()
+{
+    local config_file=$SNAP_DATA/.config
+    if [ -e ${config_file} ]; then
+        grep kiosk-mode ${config_file} | cut -d'=' -f2
+    else
+        echo "on"
+    fi
+}
+
 if [ "$SNAP_ARCH" == "amd64" ]; then
     ARCH="x86_64-linux-gnu"
 elif [ "$SNAP_ARCH" == "armhf" ]; then
@@ -16,4 +26,34 @@ export MIR_CLIENT_PLATFORM_PATH=$SNAP/mir-libs/$ARCH/mir/client-platform
 export MIR_SERVER_PLATFORM_PATH=$SNAP/mir-libs/$ARCH/mir/server-platform
 export LD_LIBRARY_PATH="$SNAP/mir-libs/$ARCH:$SNAP/mir-libs/$ARCH/mesa-egl:$LD_LIBRARY_PATH"
 
-$SNAP/usr/bin/miral-kiosk --vt 1 --arw-file --file /run/mir_socket
+while true; do
+    kiosk_mode="$(get_kiosk_mode)"
+    if [ "${kiosk_mode}" == "off" ]; then
+        bin_to_run=miral-shell
+    else
+        bin_to_run=miral-kiosk
+    fi
+
+    $SNAP/usr/bin/${bin_to_run} --vt 1 --arw-file --file /run/mir_socket &
+    miral_pid=$!
+
+    $SNAP/usr/bin/inotifywait -e modify $SNAP_DATA/.config &
+    inotify_pid=$!
+
+    # Wait for a notification or server death
+    wait -n
+
+    # Server could have died, stop waiting for notifications
+    kill ${inotify_pid} > /dev/null
+
+    echo "Shutting down ${bin_to_run} (pid: ${miral_pid})"
+    kill ${miral_pid} > /dev/null
+    if [ $? -ne 0 ]; then
+        echo "${bin_to_run} was already dead!"
+        exit 1
+    fi
+
+    # Don't spin up more processes until these exit
+    wait ${miral_pid}
+    wait ${inotify_pid}
+done
