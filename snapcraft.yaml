@@ -31,11 +31,12 @@ parts:
     organize:
       usr/share/icons/DMZ-White: icons/default
 
-  run-miral:
+  glue:
     plugin: dump
     source: .
     organize:
       run-miral: bin/run-miral
+      configure: meta/hooks/configure
 
   mir-libs-target:
     plugin: dump
