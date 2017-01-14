@@ -7,6 +7,7 @@ grade: devel
 
 plugs:
   mir-libs:
+    content: mir-libs
     interface: content
     target: mir-libs
     default-provider: mir-libs:mir-libs
@@ -37,11 +38,6 @@ parts:
     organize:
       run-miral: bin/run-miral
       configure: meta/hooks/configure
-
-  mir-libs-target:
-    plugin: dump
-    source: .
-    snap: [mir-libs]
 
   inotify-tools:
     plugin: nil
