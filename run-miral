@@ -32,9 +32,6 @@ export MIR_CLIENT_PLATFORM_PATH=$SNAP/mir-libs/$ARCH/mir/client-platform
 export MIR_SERVER_PLATFORM_PATH=$SNAP/mir-libs/$ARCH/mir/server-platform
 export LD_LIBRARY_PATH="$SNAP/mir-libs/$ARCH:$SNAP/mir-libs/$ARCH/mesa-egl:$LD_LIBRARY_PATH"
 
-# Workaround for mir bug LP:#1656164
-$SNAP/bin/drm-init-gamma
-
 while true; do
 
     bin_to_run=$(choose_kiosk_or_shell)

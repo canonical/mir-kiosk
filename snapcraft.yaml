@@ -46,11 +46,3 @@ parts:
   inotify-tools:
     plugin: nil
     stage-packages: [inotify-tools]
-
-  drm-init-gamma:
-    plugin: cmake
-    source: drm-init-gamma
-    build-packages:
-      - build-essential
-      - libdrm-dev
-      - pkg-config
