@@ -8,15 +8,18 @@ grade: devel
 plugs:
   mir-libs:
     interface: content
+    content: mir-libs
     target: mir-libs
-    default-provider: mir-libs:mir-libs
+    default-provider: mir-libs
 
 apps:
   mir-kiosk:
     command: bin/run-miral
     daemon: simple
     slots: [mir]
-    plugs: [opengl]
+    plugs:
+      - opengl
+      - mir-libs
 
 parts:
   miral-examples:
@@ -25,23 +28,14 @@ parts:
       - miral-examples
 
   icons:
-    plugin: dump
-    source: .
+    plugin: nil
     stage-packages: [dmz-cursor-theme]
     organize:
       usr/share/icons/DMZ-White: icons/default
 
   glue:
     plugin: dump
-    source: .
-    organize:
-      run-miral: bin/run-miral
-      configure: meta/hooks/configure
-
-  mir-libs-target:
-    plugin: dump
-    source: .
-    snap: [mir-libs]
+    source: glue
 
   inotify-tools:
     plugin: nil
