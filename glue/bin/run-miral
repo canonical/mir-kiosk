@@ -1,6 +1,6 @@
 #!/bin/bash
 
-CONFIG_FILE=$SNAP_DATA/.config
+CONFIG_FILE=$SNAP_DATA/config_options
 
 function choose_kiosk_or_shell()
 {

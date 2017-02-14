@@ -1,14 +1,17 @@
-#!/bin/bash
+#!/bin/sh
 
 kiosk_mode=$(snapctl get kiosk-mode)
-if [ -z "${kiosk_mode}" ]; then
-    kiosk_mode=on
-fi
+case $kiosk_mode in
+    ""|"on")
+        kiosk_mode="on"
+        ;;
+    "off")
+        kiosk_mode="off"
+        ;;
+    *)
+        echo "kiosk-mode can only be set to [off|on]"
+        exit 1
+        ;;
+esac
 
-if [ "${kiosk_mode}" == "off" ] || [ "${kiosk_mode}" == "on" ]; then
-    echo "kiosk-mode=$kiosk_mode" > $SNAP_DATA/.config
-else
-    echo "kiosk-mode can only be set to [off|on]"
-    exit 1
-fi
-
+echo "kiosk-mode=$kiosk_mode" > $SNAP_DATA/config_options
