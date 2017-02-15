@@ -25,13 +25,22 @@ parts:
   miral-examples:
     plugin: nil
     stage-packages:
-      - miral-examples
+     - miral-examples
+    build-attributes:
+     - no-system-libraries
+    prime:
+      - usr/lib
+      - -usr/lib/*/libmir* #Use the libraries from mir-libs content plug
+      - usr/bin/miral-kiosk
+      - usr/bin/miral-shell
 
   icons:
     plugin: nil
     stage-packages: [dmz-cursor-theme]
     organize:
       usr/share/icons/DMZ-White: icons/default
+    prime:
+     - icons/default
 
   glue:
     plugin: dump
@@ -40,3 +49,6 @@ parts:
   inotify-tools:
     plugin: nil
     stage-packages: [inotify-tools]
+    prime:
+     - usr/bin/inotifywait
+     - usr/lib
