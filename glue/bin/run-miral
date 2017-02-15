@@ -1,6 +1,6 @@
 #!/bin/bash
 
-CONFIG_FILE=$SNAP_DATA/config_options
+CONFIG_FILE=${SNAP_DATA}/config_options
 
 function choose_kiosk_or_shell()
 {
@@ -26,13 +26,28 @@ else
     ARCH="$SNAP_ARCH-linux-gnu"
 fi
 
+export MIR_LIBS=${SNAP}/mir-libs/usr/lib/$ARCH
+if [ ! -d ${MIR_LIBS} ] ; then
+    echo "####################################################################"
+    echo "ERROR: It appears ${SNAP_NAME}:mir-libs plug has not been connected."
+    echo "Please run:"
+    echo ""
+    echo "    snap install mir-libs --edge"
+    echo "    snap connect ${SNAP_NAME}:mir-libs mir-libs:mir-libs"
+    echo "    snap disable ${SNAP_NAME}"
+    echo "    sudo /usr/lib/snapd/snap-discard-ns ${SNAP_NAME}"
+    echo "    snap enable ${SNAP_NAME}"
+    echo ""
+    echo "###################################################################"
+    exit 1
+fi
+
 export XKB_CONFIG_ROOT=$SNAP/usr/share/X11/xkb
 export XCURSOR_PATH=$SNAP/icons
-export MIR_LIBS=${SNAP}/mir-libs/usr/lib/$ARCH
+
 export MIR_CLIENT_PLATFORM_PATH=${MIR_LIBS}/mir/client-platform
 export MIR_SERVER_PLATFORM_PATH=${MIR_LIBS}/mir/server-platform
 export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:${MIR_LIBS}"
-
 
 while true; do
 
