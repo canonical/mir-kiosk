@@ -28,15 +28,17 @@ fi
 
 export XKB_CONFIG_ROOT=$SNAP/usr/share/X11/xkb
 export XCURSOR_PATH=$SNAP/icons
-export MIR_CLIENT_PLATFORM_PATH=$SNAP/mir-libs/$ARCH/mir/client-platform
-export MIR_SERVER_PLATFORM_PATH=$SNAP/mir-libs/$ARCH/mir/server-platform
-export LD_LIBRARY_PATH="$SNAP/mir-libs/$ARCH:$SNAP/mir-libs/$ARCH/mesa-egl:$LD_LIBRARY_PATH"
+export MIR_LIBS=${SNAP}/mir-libs/usr/lib/$ARCH
+export MIR_CLIENT_PLATFORM_PATH=${MIR_LIBS}/mir/client-platform
+export MIR_SERVER_PLATFORM_PATH=${MIR_LIBS}/mir/server-platform
+export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:${MIR_LIBS}"
+
 
 while true; do
 
     bin_to_run=$(choose_kiosk_or_shell)
 
-    $SNAP/usr/bin/${bin_to_run} --vt 1 --arw-file --file /run/mir_socket &
+    ${SNAP}/usr/bin/${bin_to_run} --vt 1 --arw-file --file /run/mir_socket &
     miral_pid=$!
 
     # Config file should exist but let's make sure
