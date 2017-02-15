@@ -33,6 +33,7 @@ parts:
       - -usr/lib/*/libmir* #Use the libraries from mir-libs content plug
       - usr/bin/miral-kiosk
       - usr/bin/miral-shell
+      - usr/share/X11/xkb
 
   icons:
     plugin: nil
