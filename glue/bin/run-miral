@@ -5,7 +5,7 @@ CONFIG_FILE=${SNAP_DATA}/config_options
 function choose_kiosk_or_shell()
 {
     local kiosk_mode=on
-    if [ -e ${config_file} ]; then
+    if [ -e ${CONFIG_FILE} ]; then
         kiosk_mode=$(grep kiosk-mode ${CONFIG_FILE} | cut -d'=' -f2)
     fi
 
