@@ -26,7 +26,7 @@ else
     ARCH="$SNAP_ARCH-linux-gnu"
 fi
 
-export MIR_LIBS=${SNAP}/mir-libs/usr/lib/$ARCH
+export MIR_LIBS=${SNAP}/mir-libs/$ARCH
 if [ ! -d ${MIR_LIBS} ] ; then
     echo "####################################################################"
     echo "ERROR: It appears ${SNAP_NAME}:mir-libs plug has not been connected."
