@@ -1,5 +1,5 @@
 name: mir-kiosk
-version: 0.1
+version: 1.2.0 #The miral-examples version
 summary: A minimal Mir based shell for kiosk type applications
 description: A minimal Mir based shell for kiosk type applications
 confinement: strict
@@ -8,7 +8,7 @@ grade: devel
 plugs:
   mir-libs:
     interface: content
-    content: mir-libs
+    content: mir0
     target: mir-libs
     default-provider: mir-libs
 
