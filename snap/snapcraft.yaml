@@ -23,11 +23,32 @@ apps:
 
 parts:
   miral-examples:
-    plugin: nil
-    stage-packages:
-     - miral-examples
+    plugin: cmake
+    source: lp:miral/release
+    configflags:
+      - -DCMAKE_INSTALL_PREFIX=/usr
     build-attributes:
-     - no-system-libraries
+      - no-system-libraries
+    build-packages:
+      - build-essential
+      - libfreetype6-dev
+      - libgles2-mesa-dev
+      - libglib2.0-dev
+      - libmirserver-dev
+      - libmirclient-dev
+      - pkg-config
+      - python-pil
+    stage-packages:
+      - libboost-filesystem1.58.0
+      - libboost-program-options1.58.0
+      - libboost-system1.58.0
+      - libegl1-mesa
+      - libfreetype6
+      - libgles2-mesa
+      - libglib2.0-0
+      - libnettle6
+      - libprotobuf-lite9v5
+      - libxkbcommon0
     prime:
       - usr/lib
       - -usr/lib/*/libmir* #Use the libraries from mir-libs content plug
