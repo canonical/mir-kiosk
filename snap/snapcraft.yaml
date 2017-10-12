@@ -67,10 +67,3 @@ parts:
   glue:
     plugin: dump
     source: glue
-
-  inotify-tools:
-    plugin: nil
-    stage-packages: [inotify-tools]
-    prime:
-     - usr/bin/inotifywait
-     - usr/lib
