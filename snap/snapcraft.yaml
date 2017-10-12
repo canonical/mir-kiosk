@@ -5,12 +5,11 @@ description: A minimal Mir based shell for kiosk type applications
 confinement: strict
 grade: devel
 
-plugs:
+slots:
   mir-libs:
     interface: content
     content: mir0
-    target: mir-libs
-    default-provider: mir-libs
+    read: [usr/lib]
 
 apps:
   mir-kiosk:
@@ -19,7 +18,6 @@ apps:
     slots: [mir]
     plugs:
       - opengl
-      - mir-libs
 
 parts:
   mir:
