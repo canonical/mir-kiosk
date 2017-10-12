@@ -1,21 +1,4 @@
 #!/bin/bash
-
-CONFIG_FILE=${SNAP_DATA}/config_options
-
-function choose_kiosk_or_shell()
-{
-    local kiosk_mode=on
-    if [ -e ${CONFIG_FILE} ]; then
-        kiosk_mode=$(grep kiosk-mode ${CONFIG_FILE} | cut -d'=' -f2)
-    fi
-
-    if [ "${kiosk_mode}" == "off" ]; then
-        echo "miral-shell"
-    else
-        echo "miral-kiosk"
-    fi
-}
-
 if [ "$SNAP_ARCH" == "amd64" ]; then
     ARCH="x86_64-linux-gnu"
 elif [ "$SNAP_ARCH" == "armhf" ]; then
@@ -26,62 +9,10 @@ else
     ARCH="$SNAP_ARCH-linux-gnu"
 fi
 
-export MIR_LIBS=${SNAP}/mir-libs/$ARCH
-if [ ! -d ${MIR_LIBS} ] ; then
-    echo "####################################################################"
-    echo "ERROR: It appears ${SNAP_NAME}:mir-libs plug has not been connected."
-    echo "Please run:"
-    echo ""
-    echo "    snap install mir-libs --edge"
-    echo "    snap connect ${SNAP_NAME}:mir-libs mir-libs:mir-libs"
-    echo "    snap disable ${SNAP_NAME}"
-    echo "    sudo /usr/lib/snapd/snap-discard-ns ${SNAP_NAME}"
-    echo "    snap enable ${SNAP_NAME}"
-    echo ""
-    echo "###################################################################"
-    exit 1
-fi
-
 export XKB_CONFIG_ROOT=$SNAP/usr/share/X11/xkb
 export XCURSOR_PATH=$SNAP/icons
 
-export MIR_CLIENT_PLATFORM_PATH=${MIR_LIBS}/mir/client-platform
-export MIR_SERVER_PLATFORM_PATH=${MIR_LIBS}/mir/server-platform
-export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:${MIR_LIBS}"
+export MIR_CLIENT_PLATFORM_PATH=${SNAP}/usr/lib/${ARCH}/mir/client-platform
+export MIR_SERVER_PLATFORM_PATH=${SNAP}/usr/lib/${ARCH}/mir/server-platform
 
-while true; do
-
-    bin_to_run=$(choose_kiosk_or_shell)
-
-    ${SNAP}/usr/bin/${bin_to_run} --vt 1 --arw-file --file /run/mir_socket &
-    miral_pid=$!
-
-    # Config file should exist but let's make sure
-    # otherwise, inotifywait will exit immediately and loop will
-    # keep restarting server
-    if [ -e "${CONFIG_FILE}" ]; then
-        $SNAP/usr/bin/inotifywait -e modify ${CONFIG_FILE} &
-        inotify_pid=$!
-    fi
-
-    # Wait for a notification or server death
-    wait -n
-
-    # Server may have died, stop waiting for config notifications
-    if [ -n "${inotify_pid}" ]; then
-        kill ${inotify_pid} > /dev/null
-        wait ${inotify_pid}
-        unset inotify_pid
-    fi
-
-    echo "Shutting down ${bin_to_run} (pid: ${miral_pid})"
-    kill ${miral_pid} > /dev/null
-    if [ $? -ne 0 ]; then
-        echo "${bin_to_run} was already dead!"
-        exit 1
-    fi
-
-    # Ensure server processes has quit for sure
-    wait ${miral_pid}
-    unset miral_pid
-done
+exec ${SNAP}/usr/bin/miral-kiosk --vt 1 --arw-file --file /run/mir_socket
