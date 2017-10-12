@@ -1,5 +1,5 @@
 name: mir-kiosk
-version: 1.2.3 # The miral release version
+version: 0.28
 summary: A minimal Mir based shell for kiosk type applications
 description: A minimal Mir based shell for kiosk type applications
 confinement: strict
