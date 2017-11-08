@@ -1,14 +1,14 @@
 name: mir-kiosk
-version: 0.28
+version: 0.28.1
 summary: A minimal Mir based shell for kiosk type applications
 description: A minimal Mir based shell for kiosk type applications
 confinement: strict
 grade: devel
 
 slots:
-  mir-libs:
+  mir-libs-1604:
     interface: content
-    content: mir0
+    content: mir0-1604
     read: [usr/lib]
 
 apps:
