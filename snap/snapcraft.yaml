@@ -22,7 +22,7 @@ apps:
 parts:
   mir:
     plugin: cmake
-    source: lp:mir/0.28
+    source: lp:mir/ubuntu
     configflags:
       - -DCMAKE_INSTALL_PREFIX=/usr
       - -DMIR_ENABLE_TESTS=off
