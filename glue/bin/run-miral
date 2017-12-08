@@ -9,11 +9,18 @@ else
     ARCH="$SNAP_ARCH-linux-gnu"
 fi
 
-export XDG_RUNTIME_DIR=/run
+# XDG_RUNTIME_DIR is /run/user/<uid>/snap.$SNAP but in order to share the wayland
+# socket with other clients, override it to be /run/user/<uid>
+export XDG_RUNTIME_DIR=$XDG_RUNTIME_DIR/..
+
+# Create $XDG_RUNTIME_DIR if not exists (to be removed when LP: #1738197 is fixed)
+[ ! -d "$XDG_RUNTIME_DIR" ] && mkdir $XDG_RUNTIME_DIR -p -m 700
+
 export XKB_CONFIG_ROOT=$SNAP/usr/share/X11/xkb
 export XCURSOR_PATH=$SNAP/icons
 
 export MIR_CLIENT_PLATFORM_PATH=${SNAP}/usr/lib/${ARCH}/mir/client-platform
 export MIR_SERVER_PLATFORM_PATH=${SNAP}/usr/lib/${ARCH}/mir/server-platform
+export LD_LIBRARY_PATH=$SNAP/usr/lib/${ARCH}/mesa-egl:$LD_LIBRARY_PATH
 
 exec ${SNAP}/usr/bin/miral-kiosk --vt 1 --arw-file --file /run/mir_socket

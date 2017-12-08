@@ -15,7 +15,9 @@ apps:
   mir-kiosk:
     command: bin/run-miral
     daemon: simple
-    slots: [mir]
+    slots:
+      - mir
+      - wayland
     plugs:
       - opengl
 
