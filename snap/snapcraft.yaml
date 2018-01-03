@@ -1,5 +1,5 @@
 name: mir-kiosk
-version: 0.28.1
+version: 0.29.0
 summary: A minimal Mir based shell for kiosk type applications
 description: A minimal Mir based shell for kiosk type applications
 confinement: strict
@@ -21,50 +21,10 @@ apps:
 
 parts:
   mir:
-    plugin: cmake
-    source: lp:mir/ubuntu
-    configflags:
-      - -DCMAKE_INSTALL_PREFIX=/usr
-      - -DMIR_ENABLE_TESTS=off
-      - -DDMIR_PLATFORM=mesa-kms
-      - -Duse_debflags=on
-    build-packages:
-      - build-essential
-      - libboost-dev
-      - libboost-date-time-dev
-      - libboost-program-options-dev
-      - libboost-system-dev
-      - libboost-filesystem-dev
-      - protobuf-compiler
-      - libdrm-dev
-      - libegl1-mesa-dev
-      - libgles2-mesa-dev
-      - libgbm-dev
-      - libglm-dev
-      - libprotobuf-dev
-      - libgoogle-glog-dev
-      - liblttng-ust-dev
-      - libxkbcommon-dev
-      - libudev-dev
-      - libxml++2.6-dev
-      - libglib2.0-dev
-      - libfreetype6-dev
-      - libevdev-dev
-      - libinput-dev
-      - uuid-dev
-      - nettle-dev
-      - libcapnp-dev
-      - capnproto
-      - libepoxy-dev
-      - python3-pil
-
-  # These are dependencies that are loaded at runtime but the
-  # linker doesn't know about at build time so snapcraft doesn't copy them
-  runtime-deps:
     plugin: nil
     stage-packages:
-      - libgl1-mesa-dri
-      - xkb-data
+      - mir-graphics-drivers-desktop
+      - mir-demos
 
   icons:
     plugin: nil
