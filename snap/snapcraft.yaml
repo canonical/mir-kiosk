@@ -11,6 +11,10 @@ slots:
     content: mir0-1604
     read: [usr/lib]
 
+  content:
+    contents: wayland-socket-directory
+    write: [ $SNAP_DATA ]
+
 apps:
   mir-kiosk:
     command: bin/run-miral
@@ -20,6 +24,10 @@ apps:
       - wayland
     plugs:
       - opengl
+    environment:
+      XDG_RUNTIME_DIR: $SNAP_DATA
+      XKB_CONFIG_ROOT: $SNAP/usr/share/X11/xkb
+      XCURSOR_PATH:    $SNAP/icons
 
 parts:
   mir:
