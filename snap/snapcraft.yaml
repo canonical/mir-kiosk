@@ -13,7 +13,7 @@ slots:
 
   content:
     contents: wayland-socket-directory
-    write: [ $SNAP_DATA ]
+    write: [ $SNAP_DATA/wayland ]
 
 apps:
   mir-kiosk:
@@ -25,7 +25,6 @@ apps:
     plugs:
       - opengl
     environment:
-      XDG_RUNTIME_DIR: $SNAP_DATA
       XKB_CONFIG_ROOT: $SNAP/usr/share/X11/xkb
       XCURSOR_PATH:    $SNAP/icons
 
