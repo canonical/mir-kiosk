@@ -12,8 +12,6 @@ fi
 export MIR_CLIENT_PLATFORM_PATH=${SNAP}/usr/lib/${ARCH}/mir/client-platform
 export MIR_SERVER_PLATFORM_PATH=${SNAP}/usr/lib/${ARCH}/mir/server-platform
 
-# Want to share the wayland sockets via the content interface, so place in
-# dedicated directory
-export XDG_RUNTIME_DIR=$SNAP_DATA/wayland
+mkdir -p $XDG_RUNTIME_DIR # make sure it exists
 
-exec ${SNAP}/usr/bin/miral-kiosk --vt 3 --arw-file --file /run/mir_socket
+exec ${SNAP}/usr/bin/miral-kiosk --vt 1 --arw-file --file /run/mir_socket
