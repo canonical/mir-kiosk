@@ -12,7 +12,7 @@ slots:
     read: [usr/lib]
 
   content:
-    contents: wayland-socket-directory
+    content: wayland-socket-directory
     write: [ $SNAP_DATA/wayland ]
 
 apps:
