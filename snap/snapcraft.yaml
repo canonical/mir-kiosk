@@ -11,8 +11,9 @@ slots:
     content: mir0-1604
     read: [usr/lib]
 
-  content:
-    content: wayland-socket-directory
+  wayland-socket-dir:
+    interface: content
+    content: wayland-socket-dir
     write: [ $SNAP_DATA/wayland ]
 
 apps:
