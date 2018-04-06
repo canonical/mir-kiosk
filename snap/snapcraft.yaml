@@ -1,5 +1,5 @@
 name: mir-kiosk
-version: 0.31.0
+version: 0.31.1
 summary: A minimal Mir based shell for kiosk type applications
 description: A minimal Mir based shell for kiosk type applications
 confinement: strict
