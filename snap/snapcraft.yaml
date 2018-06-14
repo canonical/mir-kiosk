@@ -4,6 +4,7 @@ summary: A minimal Mir based shell for kiosk type applications
 description: A minimal Mir based shell for kiosk type applications
 confinement: strict
 grade: devel
+base: core18
 
 slots:
   mir-libs-1604:
@@ -30,6 +31,7 @@ apps:
       XDG_RUNTIME_DIR: $SNAP_DATA/wayland
       XKB_CONFIG_ROOT: $SNAP/usr/share/X11/xkb
       XCURSOR_PATH:    $SNAP/icons
+      __EGL_VENDOR_LIBRARY_DIRS: $SNAP/etc/glvnd/egl_vendor.d:$SNAP/usr/share/glvnd/egl_vendor.d
 
 parts:
   mir:
@@ -37,6 +39,11 @@ parts:
     stage-packages:
       - mir-graphics-drivers-desktop
       - mir-demos
+
+  mesa:
+    plugin: nil
+    stage-packages:
+      - libgl1-mesa-dri
 
   icons:
     plugin: nil
