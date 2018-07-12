@@ -5,7 +5,7 @@ version-script: |
 summary: A minimal Mir based shell for kiosk type applications
 description: A minimal Mir based shell for kiosk type applications
 confinement: strict
-grade: devel
+grade: stable
 
 slots:
   mir-libs-1604:
