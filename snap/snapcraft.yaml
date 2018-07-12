@@ -1,5 +1,7 @@
 name: mir-kiosk
-version: 0.31.1
+version: mir
+version-script: |
+    LANG=C apt-cache policy mir-demos | sed -rne 's/^\s+Candidate:\s+(.*)-[^-]+$/\1/p'
 summary: A minimal Mir based shell for kiosk type applications
 description: A minimal Mir based shell for kiosk type applications
 confinement: strict
