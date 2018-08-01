@@ -17,7 +17,7 @@ slots:
     interface: content
     content: wayland-socket-dir
     write:
-      - $SNAP_DATA/wayland #really should be $XDG_RUNTIME_DIR, should patch snapd to enable that
+      - $SNAP_DATA/wayland
 
 apps:
   mir-kiosk:
