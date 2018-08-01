@@ -16,8 +16,7 @@ slots:
   wayland-socket-dir:
     interface: content
     content: wayland-socket-dir
-    write:
-      - $SNAP_DATA/wayland
+    write: [ $SNAP_DATA/wayland ]
 
 apps:
   mir-kiosk:
