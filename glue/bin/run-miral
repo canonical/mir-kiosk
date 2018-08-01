@@ -12,7 +12,8 @@ fi
 export MIR_CLIENT_PLATFORM_PATH=${SNAP}/usr/lib/${ARCH}/mir/client-platform
 export MIR_SERVER_PLATFORM_PATH=${SNAP}/usr/lib/${ARCH}/mir/server-platform
 
-export XDG_RUNTIME_DIR=$SNAP_DATA/wayland
-mkdir -p $XDG_RUNTIME_DIR # make sure it exists
+export XDG_RUNTIME_DIR=$SNAP_DATA
+mkdir -p $XDG_RUNTIME_DIR/wayland # destination dir for wayland socket
 
-exec ${SNAP}/usr/bin/miral-kiosk --vt 1 --arw-file --file /run/mir_socket
+exec ${SNAP}/usr/bin/miral-kiosk --vt 1 --arw-file --file /run/mir_socket \
+        --wayland-socket-name="wayland/wayland-0"
