@@ -28,8 +28,6 @@ apps:
     plugs:
       - opengl
     environment:
-      # Share the wayland sockets via content interface, so place in dedicated directory
-      XDG_RUNTIME_DIR: $SNAP_DATA/wayland
       XKB_CONFIG_ROOT: $SNAP/usr/share/X11/xkb
       XCURSOR_PATH:    $SNAP/icons
 
