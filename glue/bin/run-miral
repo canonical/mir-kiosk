@@ -12,6 +12,7 @@ fi
 export MIR_CLIENT_PLATFORM_PATH=${SNAP}/usr/lib/${ARCH}/mir/client-platform
 export MIR_SERVER_PLATFORM_PATH=${SNAP}/usr/lib/${ARCH}/mir/server-platform
 
-mkdir -p $XDG_RUNTIME_DIR # make sure it exists
+export XDG_RUNTIME_DIR=/run/user/0 # hardcoding as root for now
+[ ! -d "$XDG_RUNTIME_DIR" ] && mkdir $XDG_RUNTIME_DIR -m 700
 
 exec ${SNAP}/usr/bin/miral-kiosk --console-provider=vt --vt 4 --arw-file --file /run/mir_socket
