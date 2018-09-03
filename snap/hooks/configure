@@ -6,5 +6,5 @@ if [ -n "${display-layout}" ]; then
     sed --in-place=.save '/^display-layout/d' $SNAP_COMMON/miral-kiosk.config
   fi
   echo display-layout=${display-layout} >> $SNAP_COMMON/miral-kiosk.config
-  snapctl service restart $SNAP_NAME
+  snapctl restart $SNAP_NAME
 fi
