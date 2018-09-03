@@ -2,9 +2,9 @@
 
 display-layout=$(snapctl get display-layout)
 if [ -n "${display-layout}" ]; then
-  if [ -e "$XDG_CONFIG_HOME/miral-kiosk.config" ]; then
-    sed --in-place=.save '/^display-layout/d' $XDG_CONFIG_HOME/miral-kiosk.config
+  if [ -e "$SNAP_COMMON/miral-kiosk.config" ]; then
+    sed --in-place=.save '/^display-layout/d' $SNAP_COMMON/miral-kiosk.config
   fi
-  echo display-layout=${display-layout} >> $XDG_CONFIG_HOME/miral-kiosk.config
-  snapctl service restart
+  echo display-layout=${display-layout} >> $SNAP_COMMON/miral-kiosk.config
+  snapctl service restart $SNAP_NAME
 fi
