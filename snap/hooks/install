@@ -1,9 +1,5 @@
 #!/bin/sh
 
-if [ -e "$SNAP_COMMON/miral-kiosk.config" ]; then
-  sed --in-place=.save '/^\(console-provider\|vt\|arw-file\|file\)=.*/d' $SNAP_COMMON/miral-kiosk.config
-fi
-
 cat <<EOT >> "$SNAP_COMMON/miral-kiosk.config"
 console-provider=vt
 vt=4
