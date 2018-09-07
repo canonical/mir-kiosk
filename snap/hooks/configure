@@ -1,10 +1,21 @@
 #!/bin/bash
 
+# display-layout
 display_layout=$(snapctl get display-layout)
 if [ -n "${display_layout}" ]; then
   if [ -e "$SNAP_COMMON/miral-kiosk.config" ]; then
     sed --in-place=.save '/^display-layout/d' $SNAP_COMMON/miral-kiosk.config
   fi
   echo display-layout=${display_layout} >> $SNAP_COMMON/miral-kiosk.config
+  snapctl restart $SNAP_NAME
+fi
+
+# vt
+vt=$(snapctl get vt)
+if [ -n "${vt}" ]; then
+  if [ -e "$SNAP_COMMON/miral-kiosk.config" ]; then
+    sed --in-place=.save '/^vt/d' $SNAP_COMMON/miral-kiosk.config
+  fi
+  echo vt=${vt} >> $SNAP_COMMON/miral-kiosk.config
   snapctl restart $SNAP_NAME
 fi
