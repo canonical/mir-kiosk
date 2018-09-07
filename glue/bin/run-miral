@@ -15,4 +15,4 @@ export MIR_SERVER_PLATFORM_PATH=${SNAP}/usr/lib/${ARCH}/mir/server-platform
 export XDG_RUNTIME_DIR=/run/user/0 # hardcoding as root for now
 [ ! -d "$XDG_RUNTIME_DIR" ] && mkdir $XDG_RUNTIME_DIR -m 700
 
-exec ${SNAP}/usr/bin/miral-kiosk --console-provider=vt --vt 4 --arw-file --file /run/mir_socket
+exec ${SNAP}/usr/bin/miral-kiosk $*
