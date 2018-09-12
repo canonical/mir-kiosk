@@ -1,5 +1,7 @@
 #!/bin/bash
 
+changes=0
+
 # Ensure we have a config file with the fixed options
 if [ ! -e "$SNAP_COMMON/miral-kiosk.config" ]; then
 cat <<EOT > "$SNAP_COMMON/miral-kiosk.config"
@@ -7,14 +9,21 @@ arw-file=
 file=/run/mir_socket
 console-provider=vt
 EOT
+let changes+=1
 fi
 
 # display-layout
 display_layout=$(snapctl get display-layout)
 if [ -n "${display_layout}" ]; then
-  sed --in-place=.save '/^display-layout/d' $SNAP_COMMON/miral-kiosk.config
-  echo display-layout=${display_layout} >> $SNAP_COMMON/miral-kiosk.config
-  snapctl restart $SNAP_NAME
+  if [ "display-layout=${display_layout}" != "$(grep \^display-layout= $SNAP_COMMON/miral-kiosk.config)" ]; then
+    if [ changes -gt 0 ]; then
+      sed '/^display-layout=/d' $SNAP_COMMON/miral-kiosk.config
+    else
+      sed --in-place=.save '/^display-layout=/d' $SNAP_COMMON/miral-kiosk.config
+    fi
+    echo display-layout=${display_layout} >> $SNAP_COMMON/miral-kiosk.config
+    let changes+=1
+  fi
 fi
 
 # vt
@@ -25,7 +34,17 @@ if [ -n "${vt}" ]; then
     exit 1
   fi
 
-  sed --in-place=.save '/^vt/d' $SNAP_COMMON/miral-kiosk.config
-  echo vt=${vt} >> $SNAP_COMMON/miral-kiosk.config
+  if [ "vt=${vt}" != "$(grep vt= $SNAP_COMMON/miral-kiosk.config)" ]; then
+    if [ changes -gt 0 ]; then
+      sed '/^vt/d' $SNAP_COMMON/miral-kiosk.config
+    else
+      sed --in-place=.save '/^vt/d' $SNAP_COMMON/miral-kiosk.config
+    fi
+    echo vt=${vt} >> $SNAP_COMMON/miral-kiosk.config
+    let changes+=1
+  fi
+fi
+
+if [ $changes -gt 0 ]; then
   snapctl restart $SNAP_NAME
 fi
