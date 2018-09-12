@@ -1,11 +1,18 @@
 #!/bin/bash
 
+# Ensure we have a config file with the fixed options
+if [ ! -e "$SNAP_COMMON/miral-kiosk.config" ]; then
+cat <<EOT > "$SNAP_COMMON/miral-kiosk.config"
+arw-file=
+file=/run/mir_socket
+console-provider=vt
+EOT
+fi
+
 # display-layout
 display_layout=$(snapctl get display-layout)
 if [ -n "${display_layout}" ]; then
-  if [ -e "$SNAP_COMMON/miral-kiosk.config" ]; then
-    sed --in-place=.save '/^display-layout/d' $SNAP_COMMON/miral-kiosk.config
-  fi
+  sed --in-place=.save '/^display-layout/d' $SNAP_COMMON/miral-kiosk.config
   echo display-layout=${display_layout} >> $SNAP_COMMON/miral-kiosk.config
   snapctl restart $SNAP_NAME
 fi
@@ -13,9 +20,12 @@ fi
 # vt
 vt=$(snapctl get vt)
 if [ -n "${vt}" ]; then
-  if [ -e "$SNAP_COMMON/miral-kiosk.config" ]; then
-    sed --in-place=.save '/^vt/d' $SNAP_COMMON/miral-kiosk.config
+  if [ -n "${vt//[0-9]}" ] || [ ! -e "/dev/tty$vt" ]; then
+    echo "ERROR: '$vt' is not a valid VT"
+    exit 1
   fi
+
+  sed --in-place=.save '/^vt/d' $SNAP_COMMON/miral-kiosk.config
   echo vt=${vt} >> $SNAP_COMMON/miral-kiosk.config
   snapctl restart $SNAP_NAME
 fi
