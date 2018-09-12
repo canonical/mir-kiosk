@@ -1,8 +1,3 @@
 #!/bin/sh
 
-cat <<EOT >> "$SNAP_COMMON/miral-kiosk.config"
-console-provider=vt
-vt=4
-arw-file=
-file=/run/mir_socket
-EOT
+snapctl set display-layout=default vt=4
