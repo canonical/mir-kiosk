@@ -15,6 +15,18 @@ fi
 # display-layout
 display_layout=$(snapctl get display-layout)
 if [ -n "${display_layout}" ]; then
+  if [ -e "$SNAP_COMMON/miral-kiosk.display" ]; then
+    if [ -z "$(grep "^  ${display_layout}:" "$SNAP_COMMON/miral-kiosk.display")" ]; then
+      echo "ERROR: '$display_layout' is not a layout in $SNAP_COMMON/miral-kiosk.display"
+      exit 1
+    fi
+  else
+    if [ "${display_layout}" != "default" ]; then
+      echo "ERROR: '$display_layout' is not a layout in $SNAP_COMMON/miral-kiosk.display"
+      exit 1
+    fi
+  fi
+
   if [ "display-layout=${display_layout}" != "$(grep \^display-layout= $SNAP_COMMON/miral-kiosk.config)" ]; then
     if [ changes -gt 0 ]; then
       sed '/^display-layout=/d' $SNAP_COMMON/miral-kiosk.config
