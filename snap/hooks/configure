@@ -3,8 +3,8 @@
 changes=0
 
 # Ensure we have a config file with the fixed options
-if [ ! -e "$SNAP_COMMON/miral-kiosk.config" ]; then
-cat <<EOT > "$SNAP_COMMON/miral-kiosk.config"
+if [ ! -e "$SNAP_DATA/miral-kiosk.config" ]; then
+cat <<EOT > "$SNAP_DATA/miral-kiosk.config"
 arw-file=
 file=/run/mir_socket
 console-provider=vt
@@ -15,25 +15,25 @@ fi
 # display-layout
 display_layout=$(snapctl get display-layout)
 if [ -n "${display_layout}" ]; then
-  if [ -e "$SNAP_COMMON/miral-kiosk.display" ]; then
-    if [ -z "$(grep "^  ${display_layout}:" "$SNAP_COMMON/miral-kiosk.display")" ]; then
-      echo "ERROR: '$display_layout' is not a layout in $SNAP_COMMON/miral-kiosk.display"
+  if [ -e "$SNAP_DATA/miral-kiosk.display" ]; then
+    if [ -z "$(grep "^  ${display_layout}:" "$SNAP_DATA/miral-kiosk.display")" ]; then
+      echo "ERROR: '$display_layout' is not a layout in $SNAP_DATA/miral-kiosk.display"
       exit 1
     fi
   else
     if [ "${display_layout}" != "default" ]; then
-      echo "ERROR: '$display_layout' is not a layout in $SNAP_COMMON/miral-kiosk.display"
+      echo "ERROR: '$display_layout' is not a layout in $SNAP_DATA/miral-kiosk.display"
       exit 1
     fi
   fi
 
-  if [ "display-layout=${display_layout}" != "$(grep \^display-layout= $SNAP_COMMON/miral-kiosk.config)" ]; then
+  if [ "display-layout=${display_layout}" != "$(grep \^display-layout= $SNAP_DATA/miral-kiosk.config)" ]; then
     if [ changes -gt 0 ]; then
-      sed '/^display-layout=/d' $SNAP_COMMON/miral-kiosk.config
+      sed '/^display-layout=/d' $SNAP_DATA/miral-kiosk.config
     else
-      sed --in-place=.save '/^display-layout=/d' $SNAP_COMMON/miral-kiosk.config
+      sed --in-place=.save '/^display-layout=/d' $SNAP_DATA/miral-kiosk.config
     fi
-    echo display-layout=${display_layout} >> $SNAP_COMMON/miral-kiosk.config
+    echo display-layout=${display_layout} >> $SNAP_DATA/miral-kiosk.config
     let changes+=1
   fi
 fi
@@ -46,13 +46,13 @@ if [ -n "${vt}" ]; then
     exit 1
   fi
 
-  if [ "vt=${vt}" != "$(grep vt= $SNAP_COMMON/miral-kiosk.config)" ]; then
+  if [ "vt=${vt}" != "$(grep vt= $SNAP_DATA/miral-kiosk.config)" ]; then
     if [ changes -gt 0 ]; then
-      sed '/^vt/d' $SNAP_COMMON/miral-kiosk.config
+      sed '/^vt/d' $SNAP_DATA/miral-kiosk.config
     else
-      sed --in-place=.save '/^vt/d' $SNAP_COMMON/miral-kiosk.config
+      sed --in-place=.save '/^vt/d' $SNAP_DATA/miral-kiosk.config
     fi
-    echo vt=${vt} >> $SNAP_COMMON/miral-kiosk.config
+    echo vt=${vt} >> $SNAP_DATA/miral-kiosk.config
     let changes+=1
   fi
 fi

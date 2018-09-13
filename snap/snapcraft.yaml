@@ -24,7 +24,7 @@ apps:
       - opengl
     environment:
       XKB_CONFIG_ROOT: $SNAP/usr/share/X11/xkb
-      XDG_CONFIG_HOME: $SNAP_COMMON
+      XDG_CONFIG_HOME: $SNAP_DATA
       XCURSOR_PATH:    $SNAP/icons
 
 parts:
