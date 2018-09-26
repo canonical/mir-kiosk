@@ -12,6 +12,20 @@ EOT
 let changes+=1
 fi
 
+# display-config
+display_config=$(snapctl get display-config)
+if [ -n "${display_config}" ]; then
+  if [ -e "$SNAP_DATA/miral-kiosk.display" ]; then
+    if [ "$(cat $SNAP_DATA/miral-kiosk.display)" != "${display_config}" ]; then
+      echo "${display_config}" > "$SNAP_DATA/miral-kiosk.display"
+      let changes+=1
+    fi
+  else
+      echo "${display_config}" > "$SNAP_DATA/miral-kiosk.display"
+      let changes+=1
+  fi
+fi
+
 # display-layout
 display_layout=$(snapctl get display-layout)
 if [ -n "${display_layout}" ]; then
