@@ -19,12 +19,17 @@ if [ -n "${display_config}" ]; then
   echo "# USE 'snap set mir-kiosk display-config=...' INSTEAD"              >> "$SNAP_DATA/miral-kiosk.display~"
   echo ""                                                                   >> "$SNAP_DATA/miral-kiosk.display~"
   echo "${display_config}"                                                  >> "$SNAP_DATA/miral-kiosk.display~"
-  if ! diff "$SNAP_DATA/miral-kiosk.display~" "$SNAP_DATA/miral-kiosk.display" > /dev/null; then
-    mv "$SNAP_DATA/miral-kiosk.display"  "$SNAP_DATA/miral-kiosk.display.save"
+  if [ -e "$SNAP_DATA/miral-kiosk.display" ]; then
+    if ! diff "$SNAP_DATA/miral-kiosk.display~" "$SNAP_DATA/miral-kiosk.display" > /dev/null; then
+      mv "$SNAP_DATA/miral-kiosk.display"  "$SNAP_DATA/miral-kiosk.display.save"
+      mv "$SNAP_DATA/miral-kiosk.display~" "$SNAP_DATA/miral-kiosk.display"
+      let changes+=1
+    else
+      rm "$SNAP_DATA/miral-kiosk.display~"
+    fi
+  else
     mv "$SNAP_DATA/miral-kiosk.display~" "$SNAP_DATA/miral-kiosk.display"
     let changes+=1
-  else
-    rm "$SNAP_DATA/miral-kiosk.display~"
   fi
 fi
 
