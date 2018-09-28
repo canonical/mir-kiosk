@@ -79,7 +79,7 @@ if [ -n "${vt}" ]; then
   fi
 
   if [ "vt=${vt}" != "$(grep vt= ${miral_kiosk_config})" ]; then
-    if [ config_changes -gt 0 ]; then
+    if [ $config_changes -gt 0 ]; then
       sed '/^vt/d' ${miral_kiosk_config}
     else
       sed --in-place=.save '/^vt/d' ${miral_kiosk_config}
