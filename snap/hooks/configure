@@ -92,9 +92,13 @@ fi
 # cursor
 cursor=$(snapctl get cursor)
 if [ -n "${cursor}" ]; then
-  if [[ ! "${cursor}" =~ ^(auto|null|software)$ ]]; then
-    echo "ERROR: '$cursor' is not a valid cursor option (auto|null|software)"
+  if [[ ! "${cursor}" =~ ^(auto|none|software)$ ]]; then
+    echo "ERROR: '$cursor' is not a valid cursor option (auto|none|software)"
     exit 1
+  fi
+
+  if [ "${cursor}" == "none" ]; then
+    cursor="null"
   fi
 
   if [ "cursor=${cursor}" != "$(grep cursor= $SNAP_DATA/miral-kiosk.config)" ]; then
@@ -104,7 +108,7 @@ if [ -n "${cursor}" ]; then
       sed --in-place=.save '/^cursor/d' ${miral_kiosk_config}
     fi
     echo cursor=${cursor} >> ${miral_kiosk_config}
-    let $config_changes+=1
+    let config_changes+=1
   fi
 fi
 
