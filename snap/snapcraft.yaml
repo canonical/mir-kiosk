@@ -8,12 +8,6 @@ confinement: strict
 grade: stable
 base: core18
 
-slots:
-  mir-libs-1604:
-    interface: content
-    content: mir0-1604
-    read: [usr/lib]
-
 apps:
   mir-kiosk:
     command: bin/run-miral
