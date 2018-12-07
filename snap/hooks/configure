@@ -101,7 +101,7 @@ if [ -n "${cursor}" ]; then
     cursor="null"
   fi
 
-  if [ "cursor=${cursor}" != "$(grep cursor= $SNAP_DATA/miral-kiosk.config)" ]; then
+  if [ "cursor=${cursor}" != "$(grep cursor= ${miral_kiosk_config})" ]; then
     if [ $config_changes -gt 0 ]; then
       sed '/^cursor/d' ${miral_kiosk_config}
     else
