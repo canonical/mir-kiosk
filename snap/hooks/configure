@@ -15,6 +15,18 @@ EOT
 let config_changes+=1
 fi
 
+# Hack to workaround issue #704
+if [[ $(uname -r) =~ ^.*raspi2$ ]]; then
+  env_hacks=$(sed -n 's/^env-hacks=\(.*\)$/\1/p' ${miral_kiosk_config})
+  if [[ ! ${env_hacks} =~ .*MIR_MESA_KMS_DISABLE_MODESET_PROBE* ]]
+  then
+    sed --in-place '/^env-hacks=/d' ${miral_kiosk_config}
+    env_hacks=env-hacks=${env_hacks}:MIR_MESA_KMS_DISABLE_MODESET_PROBE
+    echo ${env_hacks/=:/=} >> "${miral_kiosk_config}"
+    let config_changes+=1
+  fi
+fi
+
 # display-config
 if display_config=$(snapctl get display-config); then
   if [ -n "${display_config}" ]; then
