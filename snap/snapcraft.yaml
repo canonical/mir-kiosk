@@ -8,6 +8,22 @@ confinement: strict
 grade: stable
 base: core18
 
+environment:
+  LC_ALL: C.UTF-8
+  #  # XDG config
+  XDG_CONFIG_HOME: $SNAP_DATA
+  XDG_RUNTIME_DIR: /run/user/0 # hardcoding as root for now
+  # Prep for Mir
+  MIR_CLIENT_PLATFORM_PATH: ${SNAP}/usr/lib/${SNAPCRAFT_ARCH_TRIPLET}/mir/client-platform
+  MIR_SERVER_PLATFORM_PATH: ${SNAP}/usr/lib/${SNAPCRAFT_ARCH_TRIPLET}/mir/server-platform
+
+passthrough:
+  layout:
+    /usr/share:
+      bind: $SNAP/usr/share
+    /etc/glvnd:
+      bind: $SNAP/etc/glvnd
+
 apps:
   mir-kiosk:
     command: bin/run-miral
@@ -17,31 +33,49 @@ apps:
       - wayland
     plugs:
       - opengl
-    environment:
-      XKB_CONFIG_ROOT: $SNAP/usr/share/X11/xkb
-      XDG_CONFIG_HOME: $SNAP_DATA
-      XCURSOR_PATH:    $SNAP/icons
-      __EGL_VENDOR_LIBRARY_DIRS: $SNAP/etc/glvnd/egl_vendor.d:$SNAP/usr/share/glvnd/egl_vendor.d
 
 parts:
+  ppa-mir-release:
+    plugin: nil
+    override-pull: |
+      sudo apt --assume-yes install software-properties-common
+      sudo add-apt-repository -yu ppa:mir-team/release
+      # We shouldn't need to install stuff here, but it seems to fix intermittent build failures
+      sudo apt --assume-yes install mir-demos mir-graphics-drivers-desktop
+      snapcraftctl pull
+
   mir:
+    after: [ppa-mir-release]
     plugin: nil
     stage-packages:
       - mir-graphics-drivers-desktop
       - mir-demos
-
-  mesa:
-    plugin: nil
-    stage-packages:
       - libgl1-mesa-dri
+    prime:
+      - -lib/udev
+      - -usr/doc
+      - -usr/doc-base
+      - -usr/share/applications
+      - -usr/share/apport
+      - -usr/share/bug
+      - -usr/share/doc
+      - -usr/share/doc-base
+      - -usr/share/icons
+      - -usr/share/libdrm
+      - -usr/share/libwacom
+      - -usr/share/lintian
+      - -usr/share/man
+      - -usr/share/pkgconfig
+      - -usr/lib/${SNAPCRAFT_ARCH_TRIPLET}/mir/server-platform/server-mesa-x11.so.*
+      - -usr/bin/miral-app
+      - -usr/bin/miral-desktop
+      - -usr/bin/miral-run
+      - -usr/bin/miral-shell
+      - -usr/bin/miral-xrun
 
   icons:
     plugin: nil
     stage-packages: [dmz-cursor-theme]
-    organize:
-      usr/share/icons/DMZ-White: icons/default
-    prime:
-     - icons/default
 
   glue:
     plugin: dump
