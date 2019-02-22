@@ -1,7 +1,5 @@
 name: mir-kiosk
-version: mir
-version-script: |
-    LANG=C apt-cache policy mir-demos | sed -rne 's/^\s+Candidate:\s+(.*)-[^-]+$/\1/p'
+adopt-info: ppa-mir-release
 summary: A minimal Mir based shell for kiosk type applications
 description: A minimal Mir based shell for kiosk type applications
 confinement: strict
@@ -24,7 +22,18 @@ apps:
       __EGL_VENDOR_LIBRARY_DIRS: $SNAP/etc/glvnd/egl_vendor.d:$SNAP/usr/share/glvnd/egl_vendor.d
 
 parts:
+  ppa-mir-release:
+    plugin: nil
+    override-pull: |
+      sudo apt --assume-yes install software-properties-common
+      sudo add-apt-repository -yu ppa:mir-team/release
+      # We shouldn't need to install stuff here, but it seems to fix intermittent build failures
+      sudo apt --assume-yes install mir-demos mir-graphics-drivers-desktop git
+      snapcraftctl pull
+      snapcraftctl set-version `LANG=C apt-cache policy mir-demos | sed -rne 's/^\s+Candidate:\s+([^-]*)-.+$/\1+'$(git --git-dir=$SNAPCRAFT_PRIME/../project/.git describe --always)'/p'`
+
   mir:
+    after: [ppa-mir-release]
     plugin: nil
     stage-packages:
       - mir-graphics-drivers-desktop
