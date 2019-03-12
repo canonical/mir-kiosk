@@ -1,11 +1,8 @@
 name: mir-kiosk
-version: mir
-version-script: |
-    LANG=C apt-cache policy mir-demos | sed -rne 's/^\s+Candidate:\s+(.*)-[^-]+$/\1/p'
+adopt-info: mir-demos
 summary: A minimal Mir based shell for kiosk type applications
 description: A minimal Mir based shell for kiosk type applications
 confinement: strict
-grade: stable
 base: core18
 
 apps:
@@ -24,8 +21,33 @@ apps:
       __EGL_VENDOR_LIBRARY_DIRS: $SNAP/etc/glvnd/egl_vendor.d:$SNAP/usr/share/glvnd/egl_vendor.d
 
 parts:
-  mir:
+  ppa-mir:
     plugin: nil
+    override-pull: |
+      sudo apt --assume-yes install software-properties-common
+      sudo add-apt-repository -yu ppa:mir-team/release
+      # We shouldn't need to install stuff here, but it seems to fix intermittent build failures
+      sudo apt --assume-yes install mir-demos mir-graphics-drivers-desktop
+      snapcraftctl pull
+
+  recipe-version:
+    plugin: nil
+    source: .
+    source-type: git
+    override-build: |
+      git rev-list --count HEAD > $SNAPCRAFT_PART_INSTALL/recipe-version
+    prime:
+      - -recipe-version
+
+  mir-demos:
+    after: [ppa-mir, recipe-version]
+    plugin: nil
+    override-pull: |
+      snapcraftctl pull
+      mir_version=`LANG=C apt-cache policy mir-demos | sed -rne 's/^\s+Candidate:\s+([^-]*)-.+$/\1/p'`
+      recipe_version=`cat $SNAPCRAFT_STAGE/recipe-version`
+      snapcraftctl set-version $mir_version-snap$recipe_version
+      if echo $mir_version | grep dev; then snapcraftctl set-grade devel; else snapcraftctl set-grade stable; fi
     stage-packages:
       - mir-graphics-drivers-desktop
       - mir-demos
