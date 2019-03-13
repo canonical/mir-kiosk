@@ -5,6 +5,20 @@ description: A minimal Mir based shell for kiosk type applications
 confinement: strict
 base: core18
 
+environment:
+  #  # XDG config
+  XDG_CONFIG_HOME: $SNAP_DATA
+  XDG_RUNTIME_DIR: /run/user/0 # hardcoding as root for now
+  # Prep for Mir
+  MIR_CLIENT_PLATFORM_PATH: ${SNAP}/usr/lib/${SNAPCRAFT_ARCH_TRIPLET}/mir/client-platform
+  MIR_SERVER_PLATFORM_PATH: ${SNAP}/usr/lib/${SNAPCRAFT_ARCH_TRIPLET}/mir/server-platform
+
+layout:
+  /usr/share:
+    bind: $SNAP/usr/share
+  /etc/glvnd:
+    bind: $SNAP/etc/glvnd
+
 apps:
   mir-kiosk:
     command: bin/run-miral
@@ -14,11 +28,6 @@ apps:
       - wayland
     plugs:
       - opengl
-    environment:
-      XKB_CONFIG_ROOT: $SNAP/usr/share/X11/xkb
-      XDG_CONFIG_HOME: $SNAP_DATA
-      XCURSOR_PATH:    $SNAP/icons
-      __EGL_VENDOR_LIBRARY_DIRS: $SNAP/etc/glvnd/egl_vendor.d:$SNAP/usr/share/glvnd/egl_vendor.d
 
 parts:
   ppa-mir:
@@ -26,8 +35,6 @@ parts:
     override-pull: |
       sudo apt --assume-yes install software-properties-common
       sudo add-apt-repository -yu ppa:mir-team/release
-      # We shouldn't need to install stuff here, but it seems to fix intermittent build failures
-      sudo apt --assume-yes install mir-demos mir-graphics-drivers-desktop
       snapcraftctl pull
 
   recipe-version:
@@ -51,19 +58,11 @@ parts:
     stage-packages:
       - mir-graphics-drivers-desktop
       - mir-demos
-
-  mesa:
-    plugin: nil
-    stage-packages:
       - libgl1-mesa-dri
 
   icons:
     plugin: nil
     stage-packages: [dmz-cursor-theme]
-    organize:
-      usr/share/icons/DMZ-White: icons/default
-    prime:
-     - icons/default
 
   glue:
     plugin: dump
