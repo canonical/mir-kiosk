@@ -1,11 +1,8 @@
 name: mir-kiosk
-version: mir
-version-script: |
-    LANG=C apt-cache policy mir-demos | sed -rne 's/^\s+Candidate:\s+(.*)-[^-]+$/\1/p'
+adopt-info: mir-demos
 summary: A minimal Mir based shell for kiosk type applications
 description: A minimal Mir based shell for kiosk type applications
 confinement: strict
-grade: stable
 base: core18
 
 environment:
@@ -35,7 +32,7 @@ apps:
       - opengl
 
 parts:
-  ppa-mir-release:
+  ppa-mir:
     plugin: nil
     override-pull: |
       sudo apt --assume-yes install software-properties-common
@@ -44,34 +41,28 @@ parts:
       sudo apt --assume-yes install mir-demos mir-graphics-drivers-desktop
       snapcraftctl pull
 
-  mir:
-    after: [ppa-mir-release]
+  recipe-version:
     plugin: nil
+    source: .
+    source-type: git
+    override-build: |
+      git rev-list --count HEAD > $SNAPCRAFT_PART_INSTALL/recipe-version
+    prime:
+      - -recipe-version
+
+  mir-demos:
+    after: [ppa-mir, recipe-version]
+    plugin: nil
+    override-pull: |
+      snapcraftctl pull
+      mir_version=`LANG=C apt-cache policy mir-demos | sed -rne 's/^\s+Candidate:\s+([^-]*)-.+$/\1/p'`
+      recipe_version=`cat $SNAPCRAFT_STAGE/recipe-version`
+      snapcraftctl set-version $mir_version-snap$recipe_version
+      if echo $mir_version | grep dev; then snapcraftctl set-grade devel; else snapcraftctl set-grade stable; fi
     stage-packages:
       - mir-graphics-drivers-desktop
       - mir-demos
       - libgl1-mesa-dri
-    prime:
-      - -lib/udev
-      - -usr/doc
-      - -usr/doc-base
-      - -usr/share/applications
-      - -usr/share/apport
-      - -usr/share/bug
-      - -usr/share/doc
-      - -usr/share/doc-base
-      - -usr/share/icons
-      - -usr/share/libdrm
-      - -usr/share/libwacom
-      - -usr/share/lintian
-      - -usr/share/man
-      - -usr/share/pkgconfig
-      - -usr/lib/${SNAPCRAFT_ARCH_TRIPLET}/mir/server-platform/server-mesa-x11.so.*
-      - -usr/bin/miral-app
-      - -usr/bin/miral-desktop
-      - -usr/bin/miral-run
-      - -usr/bin/miral-shell
-      - -usr/bin/miral-xrun
 
   icons:
     plugin: nil
