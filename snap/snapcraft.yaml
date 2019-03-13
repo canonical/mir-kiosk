@@ -6,7 +6,6 @@ confinement: strict
 base: core18
 
 environment:
-  LC_ALL: C.UTF-8
   #  # XDG config
   XDG_CONFIG_HOME: $SNAP_DATA
   XDG_RUNTIME_DIR: /run/user/0 # hardcoding as root for now
@@ -37,8 +36,6 @@ parts:
     override-pull: |
       sudo apt --assume-yes install software-properties-common
       sudo add-apt-repository -yu ppa:mir-team/release
-      # We shouldn't need to install stuff here, but it seems to fix intermittent build failures
-      sudo apt --assume-yes install mir-demos mir-graphics-drivers-desktop
       snapcraftctl pull
 
   recipe-version:
