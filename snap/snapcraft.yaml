@@ -13,11 +13,12 @@ environment:
   MIR_CLIENT_PLATFORM_PATH: ${SNAP}/usr/lib/${SNAPCRAFT_ARCH_TRIPLET}/mir/client-platform
   MIR_SERVER_PLATFORM_PATH: ${SNAP}/usr/lib/${SNAPCRAFT_ARCH_TRIPLET}/mir/server-platform
 
-layout:
-  /usr/share:
-    bind: $SNAP/usr/share
-  /etc/glvnd:
-    bind: $SNAP/etc/glvnd
+passthrough:
+  layout:
+    /usr/share:
+      bind: $SNAP/usr/share
+    /etc/glvnd:
+      bind: $SNAP/etc/glvnd
 
 apps:
   mir-kiosk:
