@@ -15,6 +15,17 @@ EOT
 let config_changes+=1
 fi
 
+# As mir-kiosk HAS to run mesa-kms we can safely override the probe for KMS everywhere.
+# This ensures the best possible diagnostics whenever we fail to start.
+env_hacks=$(sed -n 's/^env-hacks=\(.*\)$/\1/p' ${miral_kiosk_config})
+if [[ ! ${env_hacks} =~ .*MIR_MESA_KMS_DISABLE_MODESET_PROBE* ]]
+then
+  sed --in-place '/^env-hacks=/d' ${miral_kiosk_config}
+  env_hacks=env-hacks=${env_hacks}:MIR_MESA_KMS_DISABLE_MODESET_PROBE
+  echo ${env_hacks/=:/=} >> "${miral_kiosk_config}"
+  let config_changes+=1
+fi
+
 # display-config
 if display_config=$(snapctl get display-config); then
   if [ -n "${display_config}" ]; then
@@ -101,7 +112,7 @@ if [ -n "${cursor}" ]; then
     cursor="null"
   fi
 
-  if [ "cursor=${cursor}" != "$(grep cursor= $SNAP_DATA/miral-kiosk.config)" ]; then
+  if [ "cursor=${cursor}" != "$(grep cursor= ${miral_kiosk_config})" ]; then
     if [ $config_changes -gt 0 ]; then
       sed '/^cursor/d' ${miral_kiosk_config}
     else

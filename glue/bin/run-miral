@@ -1,18 +1,4 @@
 #!/bin/bash
-if [ "$SNAP_ARCH" == "amd64" ]; then
-    ARCH="x86_64-linux-gnu"
-elif [ "$SNAP_ARCH" == "armhf" ]; then
-    ARCH="arm-linux-gnueabihf"
-elif [ "$SNAP_ARCH" == "arm64" ]; then
-    ARCH="aarch64-linux-gnu"
-else
-    ARCH="$SNAP_ARCH-linux-gnu"
-fi
-
-export MIR_CLIENT_PLATFORM_PATH=${SNAP}/usr/lib/${ARCH}/mir/client-platform
-export MIR_SERVER_PLATFORM_PATH=${SNAP}/usr/lib/${ARCH}/mir/server-platform
-
-export XDG_RUNTIME_DIR=/run/user/0 # hardcoding as root for now
 [ ! -d "$XDG_RUNTIME_DIR" ] && mkdir $XDG_RUNTIME_DIR -m 700
 
 exec ${SNAP}/usr/bin/miral-kiosk "$@"

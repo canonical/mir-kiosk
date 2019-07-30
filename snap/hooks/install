@@ -1,3 +1,12 @@
 #!/bin/sh
+set -e
 
-snapctl set display-layout=default vt=4 cursor=auto
+# If 'vt.handoff' is set, Mir only starts first time on the default VT. (#779)
+# Until we understand and fix properly, set the config the way that works.
+vt=$(sed -n 's/.*vt.handoff=\([^ ]*\).*/\1/p' /proc/cmdline)
+if [ -z "$vt" ]
+then vt=4
+else vt=0
+fi
+
+snapctl set display-layout=default vt=$vt cursor=auto
