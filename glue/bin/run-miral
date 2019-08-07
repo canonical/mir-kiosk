@@ -1,4 +1,6 @@
 #!/bin/bash
-[ ! -d "$XDG_RUNTIME_DIR" ] && mkdir $XDG_RUNTIME_DIR -m 700
+
+export XDG_RUNTIME_DIR=$(dirname $XDG_RUNTIME_DIR)
+mkdir -p $XDG_RUNTIME_DIR -m 700
 
 exec ${SNAP}/usr/bin/miral-kiosk "$@"

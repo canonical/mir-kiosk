@@ -4,31 +4,44 @@ summary: A minimal Mir based shell for kiosk type applications
 description: A minimal Mir based shell for kiosk type applications
 confinement: strict
 base: core18
+license: GPL-3.0 OR GPL-2.0
 
 environment:
-  #  # XDG config
-  XDG_CONFIG_HOME: $SNAP_DATA
-  XDG_RUNTIME_DIR: /run/user/0 # hardcoding as root for now
   # Prep for Mir
   MIR_CLIENT_PLATFORM_PATH: ${SNAP}/usr/lib/${SNAPCRAFT_ARCH_TRIPLET}/mir/client-platform
   MIR_SERVER_PLATFORM_PATH: ${SNAP}/usr/lib/${SNAPCRAFT_ARCH_TRIPLET}/mir/server-platform
+  # Prep EGL
+  __EGL_VENDOR_LIBRARY_DIRS: $SNAP/etc/glvnd/egl_vendor.d:$SNAP/usr/share/glvnd/egl_vendor.d
+  LIBGL_DRIVERS_PATH: ${SNAP}/usr/lib/${SNAPCRAFT_ARCH_TRIPLET}/dri
+  LIBVA_DRIVERS_PATH: ${SNAP}/usr/lib/${SNAPCRAFT_ARCH_TRIPLET}/dri
 
-passthrough:
-  layout:
-    /usr/share:
-      bind: $SNAP/usr/share
-    /etc/glvnd:
-      bind: $SNAP/etc/glvnd
+layout:
+  /usr/share:
+    bind: $SNAP/usr/share
+  /etc/glvnd:
+    bind: $SNAP/etc/glvnd
 
 apps:
   mir-kiosk:
     command: bin/run-miral
-    daemon: simple
-    slots:
-      - mir
-      - wayland
     plugs:
-      - opengl
+      - x11
+    environment:
+      LD_LIBRARY_PATH: ${LD_LIBRARY_PATH}:${SNAP}/usr/lib/${SNAPCRAFT_ARCH_TRIPLET}/pulseaudio:${SNAP}/usr/lib/libreoffice/program/:${SNAP}/usr/lib/${SNAPCRAFT_ARCH_TRIPLET}/samba
+
+  daemon:
+    command: bin/run-daemon $SNAP/bin/run-miral
+    daemon: simple
+    environment:
+      # XDG config
+      XDG_CONFIG_HOME: $SNAP_DATA
+
+slots:
+  mir:
+  wayland:
+
+plugs:
+  opengl:
 
 parts:
   ppa-mir:
