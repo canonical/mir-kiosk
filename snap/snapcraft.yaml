@@ -44,13 +44,6 @@ plugs:
   opengl:
 
 parts:
-  ppa-mir:
-    plugin: nil
-    override-pull: |
-      sudo apt --assume-yes install software-properties-common
-      sudo add-apt-repository -yu ppa:mir-team/release
-      snapcraftctl pull
-
   recipe-version:
     plugin: nil
     source: .
@@ -61,8 +54,9 @@ parts:
       - -recipe-version
 
   mir-demos:
-    after: [ppa-mir, recipe-version]
-    plugin: nil
+    after: [recipe-version]
+    plugin: ppa
+    ppa: mir-team/release
     override-pull: |
       snapcraftctl pull
       mir_version=`LANG=C apt-cache policy mir-demos | sed -rne 's/^\s+Candidate:\s+([^-]*)-.+$/\1/p'`
