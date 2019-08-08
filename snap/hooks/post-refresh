@@ -19,12 +19,13 @@ fi
 
 cursor=$(snapctl get cursor)
 if [ "$cursor" = "" ]
-then cursor=auto
-fi
-# Workaround for https://github.com/MirServer/mir-kiosk/issues/23
-# "Mouse offset from image on Raspberry Pi 3 with Ubuntu Core 18"
-if grep -q snap_core=core18 /proc/cmdline && grep -q snap_kernel=pi-kernel /proc/cmdline
-then cursor=software
+then
+  cursor=auto
+  # Workaround for https://github.com/MirServer/mir-kiosk/issues/23
+  # "Mouse offset from image on Raspberry Pi 3 with Ubuntu Core 18"
+  if grep -q snap_core=core18 /proc/cmdline && grep -q snap_kernel=pi-kernel /proc/cmdline
+  then cursor=software
+  fi
 fi
 
 daemon=$(snapctl get daemon)
