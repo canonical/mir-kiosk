@@ -1,0 +1,8 @@
+#!/bin/sh
+set -ex
+
+mkdir -p $HOME/.config/
+grep -vE "(^vt=|console-provider=vt)" $SNAP_DATA/miral-kiosk.config > $HOME/.config/miral-kiosk.config
+if [ -e "$SNAP_DATA/miral-kiosk.display" ]; then cp "$SNAP_DATA/miral-kiosk.display" $HOME/.config/; fi
+
+exec "$@"
