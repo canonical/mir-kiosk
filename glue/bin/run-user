@@ -2,7 +2,7 @@
 set -ex
 
 mkdir -p $HOME/.config/
-grep -vE "(^vt=|console-provider=vt)" $SNAP_DATA/miral-kiosk.config > $HOME/.config/miral-kiosk.config
-if [ -e "$SNAP_DATA/miral-kiosk.display" ]; then cp "$SNAP_DATA/miral-kiosk.display" $HOME/.config/; fi
+# Copy the daemon config, dropping configuration keys that are specific to daemon execution
+grep -vE "(^vt=|^console-provider=vt|^display-layout=)" $SNAP_DATA/miral-kiosk.config > $HOME/.config/miral-kiosk.config
 
 exec "$@"
