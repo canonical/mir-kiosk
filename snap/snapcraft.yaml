@@ -23,7 +23,7 @@ layout:
 
 apps:
   mir-kiosk:
-    command: bin/run-miral
+    command: bin/run-user $SNAP/bin/run-miral
     plugs:
       - x11
     environment:

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 export XDG_RUNTIME_DIR=$(dirname $XDG_RUNTIME_DIR)
 mkdir -p $XDG_RUNTIME_DIR -m 700

@@ -9,7 +9,6 @@ miral_kiosk_config="$SNAP_DATA/miral-kiosk.config"
 if [ ! -e "${miral_kiosk_config}" ]; then
 cat <<EOT > "${miral_kiosk_config}"
 arw-file=
-file=/run/mir_socket
 console-provider=vt
 EOT
 let config_changes+=1
