@@ -11,23 +11,18 @@ environment:
   MIR_CLIENT_PLATFORM_PATH: ${SNAP}/usr/lib/${SNAPCRAFT_ARCH_TRIPLET}/mir/client-platform
   MIR_SERVER_PLATFORM_PATH: ${SNAP}/usr/lib/${SNAPCRAFT_ARCH_TRIPLET}/mir/server-platform
   # Prep EGL
-  __EGL_VENDOR_LIBRARY_DIRS: $SNAP/etc/glvnd/egl_vendor.d:$SNAP/usr/share/glvnd/egl_vendor.d
   LIBGL_DRIVERS_PATH: ${SNAP}/usr/lib/${SNAPCRAFT_ARCH_TRIPLET}/dri
   LIBVA_DRIVERS_PATH: ${SNAP}/usr/lib/${SNAPCRAFT_ARCH_TRIPLET}/dri
 
 layout:
   /usr/share:
     bind: $SNAP/usr/share
-  /etc/glvnd:
-    bind: $SNAP/etc/glvnd
 
 apps:
   mir-kiosk:
     command: bin/run-user $SNAP/bin/run-miral
     plugs:
       - x11
-    environment:
-      LD_LIBRARY_PATH: ${LD_LIBRARY_PATH}:${SNAP}/usr/lib/${SNAPCRAFT_ARCH_TRIPLET}/pulseaudio:${SNAP}/usr/lib/libreoffice/program/:${SNAP}/usr/lib/${SNAPCRAFT_ARCH_TRIPLET}/samba
 
   daemon:
     command: bin/run-daemon $SNAP/bin/run-miral
