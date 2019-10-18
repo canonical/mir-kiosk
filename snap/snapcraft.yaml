@@ -37,7 +37,6 @@ apps:
       XDG_CONFIG_HOME: $SNAP_DATA
 
 slots:
-  mir:
   wayland:
 
 plugs:
