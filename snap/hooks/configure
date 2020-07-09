@@ -59,12 +59,18 @@ display_layout=$(snapctl get display-layout)
 if [ -n "${display_layout}" ]; then
   if [ -e "${miral_kiosk_display}" ]; then
     if [ -z "$(grep "^  ${display_layout}:" "${miral_kiosk_display}")" ]; then
-      echo "ERROR: '$display_layout' is not a layout in ${miral_kiosk_display}"
+      echo "ERROR: '$display_layout' is not a layout in ${miral_kiosk_display}:"
+      echo "---"
+      cat "${miral_kiosk_display}"
+      echo "---"
       exit 1
     fi
   else
     if [ "${display_layout}" != "default" ]; then
-      echo "ERROR: '$display_layout' is not a layout in ${miral_kiosk_display}"
+      echo "ERROR: '$display_layout' is not a layout in ${miral_kiosk_display}:"
+      echo "---"
+      cat "${miral_kiosk_display}"
+      echo "---"
       exit 1
     fi
   fi
