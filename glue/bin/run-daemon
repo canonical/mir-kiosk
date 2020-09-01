@@ -2,5 +2,5 @@
 set -e
 
 if [ "$(snapctl get daemon)" = "true" ]; then
-    exec "$@"
+    exec nohup "$@"
 fi
