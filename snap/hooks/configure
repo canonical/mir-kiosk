@@ -131,3 +131,23 @@ fi
 if [ $(($config_changes+$display_changes)) -gt 0 ]; then
   snapctl restart $SNAP_NAME
 fi
+
+# show-splash 
+showsplash=$(snapctl get show-splash)
+if [ -n "${showsplash}" ]; then
+  if [[ ! "${showsplash}" =~ ^(true|false)$ ]]; then
+    echo "ERROR: '$showsplash' is not a valid cursor option (true|false)"
+    exit 1
+  fi
+
+  if [ "show-splash=${showsplash}" != "$(grep show-splash= ${miral_kiosk_config})" ]; then
+    if [ $config_changes -gt 0 ]; then
+      sed '/^show-splash/d' ${miral_kiosk_config}
+    else
+      sed --in-place=.save '/^show-splash/d' ${miral_kiosk_config}
+    fi
+    echo show-splash=${showsplash} >> ${miral_kiosk_config}
+    let config_changes+=1
+  fi
+fi
+

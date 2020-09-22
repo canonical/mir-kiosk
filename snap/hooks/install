@@ -37,4 +37,9 @@ then
   fi
 fi
 
-snapctl set display-layout=$display_layout vt=$vt cursor=$cursor daemon=$daemon
+show_splash=$(snapctl get show-splash)
+if [ "$show_splash" = "" ]
+then show_splash=true
+fi
+
+snapctl set display-layout=$display_layout vt=$vt cursor=$cursor daemon=$daemon show-splash=$show_splash
