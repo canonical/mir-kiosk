@@ -6,6 +6,12 @@ confinement: strict
 base: core20
 license: GPL-3.0 OR GPL-2.0
 
+architectures:
+  - build-on: amd64
+  - build-on: arm64
+  - build-on: armhf
+#  - build-on: i386
+
 environment:
   # Prep for Mir
   MIR_CLIENT_PLATFORM_PATH: ${SNAP}/usr/lib/${SNAPCRAFT_ARCH_TRIPLET}/mir/client-platform
