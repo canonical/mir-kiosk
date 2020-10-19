@@ -30,7 +30,11 @@ fi
 
 daemon=$(snapctl get daemon)
 if [ "$daemon" = "" ]
-then daemon=true
+then
+  if grep -q -e snap_core= -e snapd_recovery_mode= /proc/cmdline
+  then daemon=true
+  else daemon=false
+  fi
 fi
 
 show_splash=$(snapctl get show-splash)
