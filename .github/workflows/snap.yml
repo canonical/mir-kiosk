@@ -20,6 +20,11 @@ jobs:
     - name: Check out code
       uses: actions/checkout@v2
 
+    - name: Patch PPA and version
+      run: |
+        sed -i 's@mir-team/release@mir-team/dev@' snap/snapcraft.yaml
+        sed -i 's@rev-list --count@rev-parse --short@' snap/snapcraft.yaml
+
     - name: Build and verify the snap
       env:
         SNAPCRAFT_BUILD_INFO: 1
