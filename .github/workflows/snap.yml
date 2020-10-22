@@ -33,7 +33,7 @@ jobs:
         sg lxd -c '/snap/bin/snapcraft --use-lxd'
 
         sudo snap install review-tools
-        /snap/bin/review-tools.snap-review --slots snap/local/slots.json *.snap
+        /snap/bin/review-tools.snap-review --slots snap/local/slots.json --plugs snap/local/plugs.json *.snap
 
     - name: Publish the snap
       run: |

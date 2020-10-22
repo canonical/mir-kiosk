@@ -22,6 +22,7 @@ apps:
   mir-kiosk:
     command: bin/run-user $SNAP/bin/run-miral
     plugs:
+      - login-session-control
       - x11
 
   daemon:
