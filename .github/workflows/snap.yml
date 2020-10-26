@@ -1,6 +1,10 @@
 name: Snap
 
 on:
+  push:
+    branches:
+    - staging
+    - trying
   pull_request:
     types: [opened, synchronize, reopened, ready_for_review]
 
@@ -36,5 +40,6 @@ jobs:
         /snap/bin/review-tools.snap-review --slots snap/local/slots.json --plugs snap/local/plugs.json *.snap
 
     - name: Publish the snap
+      if: ${{ github.event_name == 'pull_request' }}
       run: |
         snapcraft upload *.snap --release "edge/pr${{ github.event.number }}"
