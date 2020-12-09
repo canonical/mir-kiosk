@@ -1,6 +1,10 @@
 #!/bin/sh
 set -e
 
+# we install with the daemon disabled, the configure hook
+# will start it if appropriate
+snapctl stop --disable $SNAP_NAME.daemon
+
 display_layout=$(snapctl get display-layout)
 if [ "$display_layout" = "" ]
 then display_layout=default
