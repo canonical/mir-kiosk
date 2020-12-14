@@ -128,10 +128,6 @@ if [ -n "${cursor}" ]; then
   fi
 fi
 
-if [ $(($config_changes+$display_changes)) -gt 0 ]; then
-  snapctl restart $SNAP_NAME
-fi
-
 # show-splash 
 showsplash=$(snapctl get show-splash)
 if [ -n "${showsplash}" ]; then
@@ -151,3 +147,12 @@ if [ -n "${showsplash}" ]; then
   fi
 fi
 
+if [ "$(snapctl get daemon)" = "true" ]; then
+  if snapctl services ${SNAP_NAME}.daemon | grep -q inactive; then
+    snapctl start --enable $SNAP_NAME.daemon 2>&1 || true
+  elif [ $(($config_changes+$display_changes)) -gt 0 ]; then
+    snapctl restart $SNAP_NAME || true
+  fi
+else
+  snapctl stop --disable $SNAP_NAME.daemon 2>&1 || true
+fi
