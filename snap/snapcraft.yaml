@@ -34,6 +34,7 @@ apps:
   daemon:
     command: bin/run-daemon $SNAP/bin/run-miral
     daemon: simple
+    restart-delay: 3s
     environment:
       # XDG config
       XDG_CONFIG_HOME: $SNAP_DATA
