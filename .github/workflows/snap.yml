@@ -40,6 +40,6 @@ jobs:
         /snap/bin/review-tools.snap-review --slots snap/local/slots.json --plugs snap/local/plugs.json *.snap
 
     - name: Publish the snap
-      if: ${{ github.event_name == 'pull_request' }}
+      if: ${{ github.event_name == 'pull_request' && github.repository == github.event.pull_request.head.repo.full_name }}
       run: |
         snapcraft upload *.snap --release "edge/pr${{ github.event.number }}"
