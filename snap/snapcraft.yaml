@@ -70,7 +70,7 @@ parts:
       mir_version=`LANG=C apt-cache policy mir-demos | sed -rne 's/^\s+Candidate:\s+([^-]*)-.+$/\1/p'`
       recipe_version=`cat $SNAPCRAFT_STAGE/recipe-version`
       snapcraftctl set-version $mir_version-snap$recipe_version
-      if echo $mir_version | grep dev; then snapcraftctl set-grade devel; else snapcraftctl set-grade stable; fi
+      if echo $mir_version | grep -e '+dev' -e '~rc' -q; then snapcraftctl set-grade devel; else snapcraftctl set-grade stable; fi
     stage-packages:
       - mir-graphics-drivers-desktop
       - mir-demos
