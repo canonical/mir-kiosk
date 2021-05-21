@@ -72,13 +72,43 @@ parts:
       snapcraftctl set-version $mir_version-snap$recipe_version
       if echo $mir_version | grep -e '+dev' -e '~rc' -q; then snapcraftctl set-grade devel; else snapcraftctl set-grade stable; fi
     stage-packages:
-      - mir-graphics-drivers-desktop
       - mir-demos
+      - mir-platform-graphics-gbm-kms
+      - mir-platform-graphics-x
       - libgl1-mesa-dri
+    prime:
+      - -lib/udev
+      - -usr/doc
+      - -usr/doc-base
+      - -usr/share/applications
+      - -usr/share/apport
+      - -usr/share/bug
+      - -usr/share/doc
+      - -usr/share/doc-base
+      - -usr/share/icons
+      - -usr/share/libdrm
+      - -usr/share/libwacom
+      - -usr/share/lintian
+      - -usr/share/man
+      - -usr/share/pkgconfig
+      - -usr/share/wayland-sessions
+      - -usr/bin/fake-mir-kiosk
+      - -usr/bin/miral-app
+      - -usr/bin/miral-desktop
+      - -usr/bin/miral-run
+      - -usr/bin/miral-shell
+      - -usr/bin/miral-system-compositor
+      - -usr/bin/miral-terminal
+      - -usr/bin/mir-shell
+      # mir-demos pulls in inotify-tools, but we don't use it
+      - -usr/lib/${SNAPCRAFT_ARCH_TRIPLET}/libinotifytools.so.0.*
+      - -usr/bin/inotify*
 
   icons:
     plugin: nil
     stage-packages: [dmz-cursor-theme]
+    prime:
+      - -usr/share/doc
 
   glue:
     plugin: dump
