@@ -66,17 +66,17 @@ parts:
   mir-demos:
     after: [recipe-version, ppa-setup]
     plugin: nil
-    override-pull: |
-      snapcraftctl pull
-      mir_version=`LANG=C apt-cache policy mir-demos | sed -rne 's/^\s+Candidate:\s+([^-]*)-.+$/\1/p'`
-      recipe_version=`cat $SNAPCRAFT_STAGE/recipe-version`
-      snapcraftctl set-version $mir_version-snap$recipe_version
-      if echo $mir_version | grep -e '+dev' -e '~rc' -q; then snapcraftctl set-grade devel; else snapcraftctl set-grade stable; fi
     stage-packages:
       - mir-demos
       - mir-platform-graphics-gbm-kms
       - mir-platform-graphics-x
       - libgl1-mesa-dri
+    override-build: |
+      mir_version=`LANG=C apt-cache policy mir-demos | sed -rne 's/^\s+Candidate:\s+([^-]*)-.+$/\1/p'`
+      recipe_version=`cat $SNAPCRAFT_STAGE/recipe-version`
+      snapcraftctl set-version $mir_version-snap$recipe_version
+      if echo $mir_version | grep -e '+dev' -e '~rc' -q; then snapcraftctl set-grade devel; else snapcraftctl set-grade stable; fi
+      snapcraftctl build
     prime:
       - -lib/udev
       - -usr/doc
