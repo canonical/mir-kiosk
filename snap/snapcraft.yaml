@@ -1,5 +1,5 @@
 name: mir-kiosk
-adopt-info: mir-demos
+adopt-info: mir-kiosk
 summary: A minimal Mir based shell for kiosk type applications
 description: A minimal Mir based shell for kiosk type applications
 confinement: strict
@@ -46,61 +46,29 @@ slots:
 plugs:
   opengl:
 
-package-repositories:
-- type: apt
-  ppa: mir-team/release
-
 parts:
-  recipe-version:
+  mir:
+    plugin: nil
+    stage-snaps:
+    - mir-core20
+    stage:
+    - -*.h
+    - -*.pc
+    - -share
+
+  mir-kiosk:
+    after: [mir]
     plugin: nil
     source: .
     source-type: git
-    override-build: |
-      git rev-list --count HEAD > $SNAPCRAFT_PART_INSTALL/recipe-version
-    prime:
-      - -recipe-version
-
-  mir-demos:
-    after: [recipe-version]
-    plugin: nil
-    stage-packages:
-      - mir-demos
-      - mir-platform-graphics-gbm-kms
-      - mir-platform-graphics-x
-      - libgl1-mesa-dri
-    override-build: |
-      mir_version=`LANG=C apt-cache policy mir-demos | sed -rne 's/^\s+Candidate:\s+([^-]*)-.+$/\1/p'`
-      recipe_version=`cat $SNAPCRAFT_STAGE/recipe-version`
+    override-pull: |
+      snapcraftctl pull
+      recipe_version=$( git rev-list --count HEAD )
+      mir_version=$( sed -rne 's/^version:\s+([^-]*)-.+$/\1/p' ${SNAPCRAFT_STAGE}/meta.mir-core20/snap.yaml )
       snapcraftctl set-version $mir_version-snap$recipe_version
       if echo $mir_version | grep -e '+dev' -e '~rc' -q; then snapcraftctl set-grade devel; else snapcraftctl set-grade stable; fi
-      snapcraftctl build
-    prime:
-      - -lib/udev
-      - -usr/doc
-      - -usr/doc-base
-      - -usr/share/applications
-      - -usr/share/apport
-      - -usr/share/bug
-      - -usr/share/doc
-      - -usr/share/doc-base
-      - -usr/share/icons
-      - -usr/share/libdrm
-      - -usr/share/libwacom
-      - -usr/share/lintian
-      - -usr/share/man
-      - -usr/share/pkgconfig
-      - -usr/share/wayland-sessions
-      - -usr/bin/fake-mir-kiosk
-      - -usr/bin/miral-app
-      - -usr/bin/miral-desktop
-      - -usr/bin/miral-run
-      - -usr/bin/miral-shell
-      - -usr/bin/miral-system-compositor
-      - -usr/bin/miral-terminal
-      - -usr/bin/mir-shell
-      # mir-demos pulls in inotify-tools, but we don't use it
-      - -usr/lib/${SNAPCRAFT_ARCH_TRIPLET}/libinotifytools.so.0.*
-      - -usr/bin/inotify*
+    stage-packages:
+    - libgl1-mesa-dri
 
   icons:
     plugin: nil
