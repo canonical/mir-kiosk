@@ -35,9 +35,10 @@ fi
 daemon=$(snapctl get daemon)
 if [ "$daemon" = "" ]
 then
-  if grep -q -e snap_core= -e snapd_recovery_mode= /proc/cmdline
-  then daemon=true
-  else daemon=false
+  # if no model at all, it's either classic or something is wrong
+  if ! snapctl model > /dev/null || [ "$( snapctl model | awk '/^classic:/ { print $2 }' )" == "true" ]
+  then daemon=false
+  else daemon=true
   fi
 fi
 
