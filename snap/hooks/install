@@ -36,7 +36,7 @@ daemon=$(snapctl get daemon)
 if [ "$daemon" = "" ]
 then
   # if no model at all, it's either classic or something is wrong
-  if ! snapctl model > /dev/null || [ "$( snapctl model | awk '/^classic:/ { print $2 }' )" == "true" ]
+  if ! snapctl model > /dev/null || [ "$( snapctl model | awk '/^classic:/ { print $2 }' )" = "true" ]
   then daemon=false
   else daemon=true
   fi
